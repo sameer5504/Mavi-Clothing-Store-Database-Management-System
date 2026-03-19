@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employees</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+
+<main class="page">
+ <h1 class="page-title">Employees</h1>
+    <div class="toolbar">
+        <div class="left">
+            <a href="{{ url_for('admin_dashboard') }}" class="back-link">⬅ Back to Dashboard</a>
+        </div>
+        <div class="right">
+            <a href="{{ url_for('add_employee') }}" class="btn btn-solid">Add Employee</a>
+        </div>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>First</th>
+                <th>Last</th>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for e in employees %}
+            <tr>
+                <td>{{ e.Employee_ID }}</td>
+                <td>{{ e.First_Name }}</td>
+                <td>{{ e.Last_Name }}</td>
+                <td>{{ e.Username }}</td>
+                <td>{{ e.Role|capitalize }}</td>
+                <td>
+                    <a href="{{ url_for('edit_employee', employee_id=e.Employee_ID) }}" class="btn btn-outline">Edit</a>
+                    <a href="{{ url_for('employee_sales', employee_id=e.Employee_ID) }}" class="btn btn-outline">View Sales</a>
+                    <a href="{{ url_for('delete_employee', employee_id=e.Employee_ID) }}"
+                       class="btn btn-delete"
+                       onclick="return confirm('Delete this employee?')">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</main>
+
+</body>
+</html>

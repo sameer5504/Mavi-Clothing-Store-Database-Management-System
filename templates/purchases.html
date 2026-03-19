@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Purchases</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mavi_style.css') }}">
+</head>
+<body>
+
+<header class="top-nav">
+    <a href="{{ url_for('admin_dashboard') }}">⬅ Back to Dashboard</a>
+</header>
+
+<main class="page">
+
+<h2 class="page-title">Current Purchases</h2>
+
+<div class="toolbar">
+  <a href="{{ url_for('order_purchase') }}" class="btn-main">+ New Purchase Order</a>
+</div>
+
+<div class="card-box">
+  {% if purchases %}
+  <table class="table-simple">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Supplier</th>
+        <th>Date</th>
+        <th>Warehouse</th>
+        <th>Employee</th>
+        <th>Subtotal</th>
+        <th class="w-240">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for p in purchases %}
+      <tr>
+        <form method="post"
+              action="{{ url_for('update_purchase', purchase_id=p.Purchase_ID) }}">
+          <td>{{ p.Purchase_ID }}</td>
+
+          <td>
+            <select name="Supplier_ID" class="input-sm" required>
+              {% for s in suppliers %}
+                <option value="{{ s.Supplier_ID }}"
+                        {% if s.Supplier_ID == p.Supplier_ID %}selected{% endif %}>
+                  {{ s.Supplier_ID }} - {{ s.Supplier_Name }}
+                </option>
+              {% endfor %}
+            </select>
+          </td>
+
+          <td>
+            <input type="date"
+                   name="Purchase_Date"
+                   class="input-sm"
+                   value="{{ p.Purchase_Date }}"
+                   required>
+          </td>
+
+          <td>
+            <select name="Warehouse_ID" class="input-sm" required>
+              {% for w in warehouses %}
+                <option value="{{ w.Warehouse_ID }}"
+                        {% if w.Warehouse_ID == p.Warehouse_ID %}selected{% endif %}>
+                  {{ w.Warehouse_ID }} - {{ w.Location }}
+                </option>
+              {% endfor %}
+            </select>
+          </td>
+
+          <td>
+            <select name="Employee_ID" class="input-sm" required>
+              {% for e in employees %}
+                <option value="{{ e.Employee_ID }}"
+                        {% if e.Employee_ID == p.Employee_ID %}selected{% endif %}>
+                  {{ e.Employee_ID }} - {{ e.First_Name }} {{ e.Last_Name }}
+                </option>
+              {% endfor %}
+            </select>
+          </td>
+
+          <td>{{ p.Purchase_Subtotal }}</td>
+
+          <td class="table-actions-wrap">
+            <button type="submit" class="btn-main btn-pad-md">Save</button>
+            <a class="btn-outline btn-pad-md"
+               href="{{ url_for('view_purchase_details',
+                                purchase_id=p.Purchase_ID) }}">
+               Details
+            </a>
+            <a class="btn-outline btn-pad-md"
+               href="{{ url_for('view_payments',
+                                purchase_id=p.Purchase_ID) }}">
+               Payments
+            </a>
+            <a class="btn-danger btn-pad-md"
+               href="{{ url_for('delete_purchase',
+                                purchase_id=p.Purchase_ID) }}"
+               onclick="return confirm('Delete this purchase?');">
+               Delete
+            </a>
+          </td>
+        </form>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p>
+      No purchases yet.
+      <a href="{{ url_for('order_purchase') }}">Create one now.</a>
+    </p>
+  {% endif %}
+</div>
+
+</main>
+
+</body>
+</html>

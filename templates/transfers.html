@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Transfers</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mavi_style.css') }}">
+</head>
+<body>
+
+<header class="top-nav">
+    <a href="{{ url_for('admin_dashboard') }}">⬅ Back to Dashboard</a>
+</header>
+
+<main class="page">
+
+<h2 class="page-title">Stock Transfers</h2>
+
+<div class="card-box">
+<form method="post" action="{{ url_for('add_transfer') }}">
+  <div class="form-grid-180">
+    <input type="hidden" name="Transfer_ID" value="{{ transfer_id }}">
+
+    <select name="Warehouse_ID" class="input-sm" required>
+      <option value="" disabled selected>Select warehouse</option>
+      {% for w in warehouses %}
+        <option value="{{ w.Warehouse_ID }}">{{ w.Warehouse_ID }} - {{ w.Location }}</option>
+      {% endfor %}
+    </select>
+
+    <select name="Store_ID" class="input-sm" required>
+      <option value="" disabled selected>Select store</option>
+      {% for s in stores %}
+        <option value="{{ s.Store_ID }}">{{ s.Store_ID }} - {{ s.Store_Name }}</option>
+      {% endfor %}
+    </select>
+
+    <select name="Employee_ID" class="input-sm" required>
+      <option value="" disabled selected>Select employee</option>
+      {% for e in employees %}
+        <option value="{{ e.Employee_ID }}">
+          {{ e.Employee_ID }} - {{ e.First_Name }} {{ e.Last_Name }}
+        </option>
+      {% endfor %}
+    </select>
+
+    <input type="date" name="Transfer_Date" class="input-sm">
+  </div>
+
+  <button class="btn-main mt-14">Save Transfer</button>
+</form>
+</div>
+
+<div class="card-box">
+<table class="table-simple">
+<thead>
+<tr>
+  <th>ID</th>
+  <th>Warehouse</th>
+  <th>Store</th>
+  <th>Date</th>
+  <th>Employee</th>
+  <th>Actions</th>
+</tr>
+</thead>
+<tbody>
+{% for t in transfers %}
+<tr>
+  <td>{{ t.Transfer_ID }}</td>
+  <td>{{ t.Warehouse_ID }}</td>
+  <td>{{ t.Store_ID }}</td>
+  <td>{{ t.Transfer_Date }}</td>
+  <td>{{ t.Employee_ID }}</td>
+  <td>
+    <a class="btn-outline"
+       href="{{ url_for('view_transfer_details', transfer_id=t.Transfer_ID) }}">
+       Details
+    </a>
+    <a class="btn-danger"
+       href="{{ url_for('delete_transfer', transfer_id=t.Transfer_ID) }}">
+       Delete
+    </a>
+  </td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+</main>
+
+</body>
+</html>

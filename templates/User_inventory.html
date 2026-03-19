@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Inventory Overview</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<main class="page">
+    <a class="back-link"
+       href="{{ url_for('admin_dashboard') if session.role == 'admin' else url_for('user_dashboard') }}">
+        ⬅ Back to Dashboard
+    </a>
+
+    <h1 class="page-title">Inventory Overview</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Category</th>
+                <th>Store Qty</th>
+                <th>Warehouse Qty</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for p in products %}
+        <tr>
+            <td>{{ p.Product_Name }} ({{ p.Size }})</td>
+            <td>{{ p.Category }}</td>
+
+            <td class="{{ p.store_status }}">{{ p.Store_Qty }}</td>
+            <td class="{{ p.warehouse_status }}">{{ p.Warehouse_Qty }}</td>
+
+            <td>
+                {% if p.store_status == "out" %}
+                    <span class="out">Out of stock</span>
+                {% elif p.store_status == "low" %}
+                    <span class="low">Low stock</span>
+                {% else %}
+                    <span class="ok">Available</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="card" style="margin-top:24px;">
+        <h3 class="card-title">Inventory Stock Visualization</h3>
+        <div class="chart-wrapper">
+            <canvas id="inventoryChart"></canvas>
+        </div>
+    </div>
+</main>
+
+<script>
+const labels = [{% for p in products %}"{{ p.Product_Name }} ({{ p.Size }})",{% endfor %}];
+const storeStock = [{% for p in products %}{{ p.Store_Qty }},{% endfor %}];
+const warehouseStock = [{% for p in products %}{{ p.Warehouse_Qty }},{% endfor %}];
+
+new Chart(document.getElementById("inventoryChart"), {
+    type: "bar",
+    data: {
+        labels,
+        datasets: [
+            { label: "Store Stock", data: storeStock },
+            { label: "Warehouse Stock", data: warehouseStock }
+        ]
+    },
+    options: {
+        indexAxis: "y",
+        responsive: true,
+        scales: {
+            x: { beginAtZero: true }
+        }
+    }
+});
+</script>
+
+</body>
+</html>

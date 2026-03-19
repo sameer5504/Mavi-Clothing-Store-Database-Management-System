@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Purchase Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mavi_style.css') }}">
+</head>
+<body>
+
+<header class="top-nav">
+    <a href="{{ url_for('view_purchases') }}">⬅ Back to Purchases</a>
+</header>
+
+<main class="page">
+
+<h2 class="page-title">Purchase #{{ purchase.Purchase_ID }}</h2>
+
+<div class="card-box">
+<table class="table-simple">
+<thead>
+<tr>
+  <th>ID</th>
+  <th>Product</th>
+  <th>Qty</th>
+  <th>Unit Cost</th>
+  <th>Actions</th>
+</tr>
+</thead>
+<tbody>
+{% for d in details %}
+<tr>
+<form method="post"
+      action="{{ url_for('update_purchase_detail',
+                          detail_id=d.PurchaseDetails_ID) }}">
+  <input type="hidden" name="Purchase_ID"
+         value="{{ purchase.Purchase_ID }}">
+
+  <td>{{ d.PurchaseDetails_ID }}</td>
+
+  <td>
+    <select name="Product_ID" class="input-sm" required>
+      {% for p in products %}
+        <option value="{{ p.Product_ID }}"
+                {% if p.Product_ID == d.Product_ID %}selected{% endif %}>
+          {{ p.Product_ID }} - {{ p.Product_Name }} {{ p.Size }}
+        </option>
+      {% endfor %}
+    </select>
+  </td>
+
+  <td>
+    <input type="number"
+           name="Quantity"
+           class="input-sm"
+           value="{{ d.Quantity }}"
+           required>
+  </td>
+
+  <td>{{ d.Unit_Cost }}</td>
+
+  <td class="table-actions-center">
+    <button class="btn-main btn-pad-sm">Save</button>
+    <a class="btn-danger btn-pad-sm"
+       href="{{ url_for('delete_purchase_detail',
+                        detail_id=d.PurchaseDetails_ID,
+                        purchase_id=purchase.Purchase_ID) }}">
+      Delete
+    </a>
+  </td>
+</form>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+<div class="card-box">
+<h4>Add New Item</h4>
+<form method="post"
+      action="{{ url_for('add_purchase_detail',
+                          purchase_id=purchase.Purchase_ID) }}">
+  <div class="form-grid-180">
+    <select name="Product_ID" class="input-sm" required>
+      <option value="" disabled selected>Select product</option>
+      {% for p in products %}
+        <option value="{{ p.Product_ID }}">
+          {{ p.Product_ID }} - {{ p.Product_Name }} {{ p.Size }}
+        </option>
+      {% endfor %}
+    </select>
+
+    <input type="number"
+           name="Quantity"
+           class="input-sm"
+           placeholder="Quantity"
+           required>
+  </div>
+
+  <button class="btn-main mt-14">Add Item</button>
+</form>
+</div>
+
+<div class="card-box">
+  <h4>Products List</h4>
+  <table class="table-simple">
+    <thead>
+      <tr>
+        <th>Product ID</th>
+        <th>Name</th>
+        <th>Size</th>
+        <th>Color</th>
+        <th>Unit Price</th>
+        <th>Category</th>
+        <th>Unit Cost</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for p in products %}
+      <tr>
+        <td>{{ p.Product_ID }}</td>
+        <td>{{ p.Product_Name }}</td>
+        <td>{{ p.Size }}</td>
+        <td>{{ p.Color }}</td>
+        <td>{{ p.Unit_Price }}</td>
+        <td>{{ p.Category }}</td>
+        <td>{{ p.Unit_Cost }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+</main>
+
+</body>
+</html>

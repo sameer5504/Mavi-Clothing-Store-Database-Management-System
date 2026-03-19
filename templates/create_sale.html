@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cash System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+
+<body>
+<main class="page">
+
+    <a href="{{ url_for('admin_dashboard') if session.role == 'admin' else url_for('user_dashboard') }}"
+       class="back-link">← Back to Dashboard</a>
+
+    <h1 class="page-title">Cash System</h1>
+
+    <form method="POST" id="saleForm">
+        <div class="grid-2">
+
+            <div class="card">
+                <h3 class="card-title">Products</h3>
+
+                <input type="text"
+                       id="productSearch"
+                       placeholder="Search product..."
+                       onkeyup="filterProducts()">
+
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Stock</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for product in products %}
+                    <tr class="product-row"
+                        data-name="{{ (product.Product_Name ~ ' ' ~ product.Size) | lower }}">
+                        <td>{{ product.Product_Name }} ({{ product.Size }})</td>
+                        <td>{{ product.Quantity_Available }}</td>
+                        <td>
+                            <button type="button"
+                                    class="btn btn-outline"
+                                    onclick="addProduct(
+                                        {{ product.Product_ID }},
+                                        '{{ product.Product_Name }} ({{ product.Size }})',
+                                        {{ product.Default_Sale_Price }},
+                                        {{ product.Quantity_Available }}
+                                    )">
+                                Add
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card sticky">
+                <h3 class="card-title">Current Sale</h3>
+
+                <label>First Name</label>
+                <input type="text" name="first_name" required>
+
+                <label>Last Name</label>
+                <input type="text" name="last_name" required>
+
+                <label>Customer Number</label>
+                <input type="text" name="customer_number" required>
+
+                <label>Sale Date</label>
+                <input type="date" name="sale_date" required>
+
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Qty</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody id="saleBody"></tbody>
+                </table>
+
+                <div class="total">
+                    Total: ₪<span id="grandTotal">0.00</span>
+                </div>
+
+                <label>Payment Method</label>
+                <select name="payment_method" required>
+                    <option value="Cash">Cash</option>
+                    <option value="Card">Card</option>
+                </select>
+
+                <button type="submit"
+                        class="btn btn-solid full"
+                        id="submitBtn"
+                        disabled>
+                    Complete Sale
+                </button>
+            </div>
+
+        </div>
+    </form>
+</main>
+
+<script>
+let saleItems = [];
+
+
+function addProduct(id, name, price, stock) {
+    let item = saleItems.find(p => p.id === id);
+
+    if (item) {
+        if (item.qty < item.stock) item.qty++;
+    } else {
+        saleItems.push({ id, name, price, qty: 1, stock });
+    }
+
+    renderSale();
+}
+
+function updateQty(index, value) {
+    value = parseInt(value);
+
+    if (isNaN(value) || value < 1) value = 1;
+    if (value > saleItems[index].stock) value = saleItems[index].stock;
+
+    saleItems[index].qty = value;
+    renderSale();
+}
+
+function removeItem(index) {
+    saleItems.splice(index, 1);
+    renderSale();
+}
+
+function renderSale() {
+    const tbody = document.getElementById("saleBody");
+    const submitBtn = document.getElementById("submitBtn");
+
+    tbody.innerHTML = "";
+    let total = 0;
+
+    saleItems.forEach((item, i) => {
+        const lineTotal = item.qty * item.price;
+        total += lineTotal;
+
+        tbody.innerHTML += `
+        <tr>
+            <td>${item.name}</td>
+            <td>
+                <input type="number"
+                       min="1"
+                       max="${item.stock}"
+                       value="${item.qty}"
+                       onchange="updateQty(${i}, this.value)">
+            </td>
+            <td>${item.price.toFixed(2)}</td>
+            <td>${lineTotal.toFixed(2)}</td>
+            <td>
+                <button type="button"
+                        class="btn btn-delete"
+                        onclick="removeItem(${i})">✕</button>
+            </td>
+
+            <!-- ALWAYS SYNCED WITH UI -->
+            <input type="hidden" name="product_id[]" value="${item.id}">
+            <input type="hidden" name="quantity[]" value="${item.qty}">
+        </tr>`;
+    });
+
+    document.getElementById("grandTotal").innerText = total.toFixed(2);
+
+
+    submitBtn.disabled = saleItems.length === 0;
+}
+
+function filterProducts() {
+    const q = document.getElementById("productSearch").value.toLowerCase();
+    document.querySelectorAll(".product-row").forEach(row => {
+        row.style.display = row.dataset.name.includes(q) ? "" : "none";
+    });
+}
+</script>
+</body>
+</html>

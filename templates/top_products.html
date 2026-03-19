@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Top 5 Best-Selling Products</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<main class="page">
+
+    <a href="{{ url_for('view_products') }}" class="back-link">⬅ Back to Products</a>
+    <h1 class="page-title">Top 5 Best-Selling Products</h1>
+
+
+    <div class="card" style="margin-bottom:24px;">
+        <form method="get" class="filter-form">
+            <div class="grid-3">
+
+                <div class="form-group">
+                    <label>Month</label>
+                    <select name="month">
+                        <option value="">All</option>
+                        {% for m in range(1,13) %}
+                        <option value="{{ m }}" {{ 'selected' if m == selected_month }}>
+                            {{ "%02d"|format(m) }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group" style="align-self:end;">
+                    <button type="submit" class="btn btn-solid">Apply</button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+
+    <div class="card">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Product</th>
+                    <th>Total Units Sold</th>
+                    <th>Total Revenue</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in products %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ p.Product_Name }} ({{ p.Size }})</td>
+                    <td>{{ p.total_units_sold }}</td>
+                    <td>₪{{ "%.2f"|format(p.total_revenue) }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" class="no-data">No data available</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+    <div class="card" style="margin-top:35px;">
+        <h3 class="card-title">Units Sold</h3>
+        <div class="chart-box">
+            <canvas
+                id="topProductsChart"
+                data-labels='[
+                    {% for p in products %}
+                        "{{ p.Product_Name }} ({{ p.Size }})"{% if not loop.last %},{% endif %}
+                    {% endfor %}
+                ]'
+                data-values='[
+                    {% for p in products %}
+                        {{ p.total_units_sold }}{% if not loop.last %},{% endif %}
+                    {% endfor %}
+                ]'>
+            </canvas>
+        </div>
+    </div>
+
+</main>
+
+
+<script>
+(() => {
+    const canvas = document.getElementById("topProductsChart");
+    if (!canvas) return;
+
+    new Chart(canvas, {
+        type: "bar",
+        data: {
+            labels: JSON.parse(canvas.dataset.labels),
+            datasets: [{
+                label: "Units Sold",
+                data: JSON.parse(canvas.dataset.values),
+                backgroundColor: "#4da3ff",
+                borderRadius: 6,
+                barThickness: 45
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { grid: { display: false } },
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1 },
+                    grid: { color: "#eaeaea" }
+                }
+            }
+        }
+    });
+})();
+</script>
+
+</body>
+</html>

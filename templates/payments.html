@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Payments</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mavi_style.css') }}">
+</head>
+<body>
+
+<header class="top-nav">
+    <a href="{{ url_for('view_purchases') }}">⬅ Back</a>
+</header>
+
+<main class="page">
+
+<h2 class="page-title">Payments – Purchase #{{ purchase.Purchase_ID }}</h2>
+
+<div class="card-box">
+  <p><strong>Subtotal:</strong> {{ subtotal }}</p>
+  <p><strong>Total Paid:</strong> {{ total_paid }}</p>
+  <p><strong>Remaining:</strong> {{ remaining }}</p>
+</div>
+
+<div class="card-box">
+<h4>Add Payment</h4>
+<form method="post"
+      action="{{ url_for('add_payment',
+                          purchase_id=purchase.Purchase_ID) }}">
+  <div class="form-grid-180">
+    <select name="Payment_Method" class="input-sm" required>
+      <option value="Cash">Cash</option>
+      <option value="Cheque">Cheque</option>
+      <option value="Bank Transfer">Bank Transfer</option>
+    </select>
+
+    <input type="number"
+           step="0.01"
+           name="Payment_Amount"
+           class="input-sm"
+           placeholder="Amount"
+           required>
+
+    <input type="date"
+           name="Payment_Date"
+           class="input-sm"
+           required>
+  </div>
+
+  <button class="btn-main mt-14">Add Payment</button>
+</form>
+</div>
+
+<div class="card-box">
+<table class="table-simple">
+<thead>
+<tr>
+  <th>ID</th>
+  <th>Method</th>
+  <th>Amount</th>
+  <th>Date</th>
+  <th>Actions</th>
+</tr>
+</thead>
+<tbody>
+{% for pay in payments %}
+<tr>
+<form method="post"
+      action="{{ url_for('update_payment',
+                          payment_id=pay.Payment_ID) }}">
+  <input type="hidden"
+         name="Purchase_ID"
+         value="{{ purchase.Purchase_ID }}">
+
+  <td>{{ pay.Payment_ID }}</td>
+
+  <td>
+    <select name="Payment_Method" class="input-sm" required>
+      <option value="Cash"
+              {% if pay.Payment_Method == 'Cash' %}selected{% endif %}>
+        Cash
+      </option>
+      <option value="Cheque"
+              {% if pay.Payment_Method == 'Cheque' %}selected{% endif %}>
+        Cheque
+      </option>
+      <option value="Bank Transfer"
+              {% if pay.Payment_Method == 'Bank Transfer' %}selected{% endif %}>
+        Bank Transfer
+      </option>
+    </select>
+  </td>
+
+  <td>
+    <input type="number"
+           step="0.01"
+           name="Payment_Amount"
+           class="input-sm"
+           value="{{ pay.Payment_Amount }}"
+           required>
+  </td>
+
+  <td>
+    <input type="date"
+           name="Payment_Date"
+           class="input-sm"
+           value="{{ pay.Payment_Date }}"
+           required>
+  </td>
+
+  <td class="table-actions-center">
+    <button class="btn-main btn-pad-sm">Save</button>
+    <a class="btn-danger btn-pad-sm"
+       href="{{ url_for('delete_payment',
+                        payment_id=pay.Payment_ID,
+                        purchase_id=purchase.Purchase_ID) }}">
+      Delete
+    </a>
+  </td>
+</form>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+</main>
+
+</body>
+</html>

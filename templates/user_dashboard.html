@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+
+<body class="no-pad">
+<header class="top-nav">
+    <div class="nav-left">
+        <img src="{{ url_for('static', filename='images/mavi-seeklogo.png') }}" class="nav-logo" alt="Mavi Logo">
+        <span class="system-name">Mavi Palestine – Internal System</span>
+    </div>
+
+    <div class="nav-right">
+        <span class="user-role">User</span>
+        <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+    </div>
+</header>
+
+<main class="page">
+    <h1 class="page-title">User Dashboard</h1>
+    <p class="page-subtitle">Select a module to continue</p>
+
+    <div class="dash-grid">
+
+        <a href="/create_sale" class="card-link">
+            <h3>Cash System</h3>
+            <p>Create and process customer sales</p>
+        </a>
+
+        <a href="/view_sales" class="card-link">
+            <h3>Sales History</h3>
+            <p>View and review completed sales</p>
+        </a>
+
+        <a href="/products" class="card-link">
+            <h3>Products</h3>
+            <p>Browse and manage product inventory</p>
+        </a>
+
+        <a href="/User_inventory" class="card-link">
+            <h3>Inventory</h3>
+            <p>View store & warehouse stock levels</p>
+        </a>
+
+        <a href="/monthly_sales" class="card-link">
+            <h3>Monthly Sales Summary</h3>
+            <p>View your sales distribution by month</p>
+        </a>
+
+    </div>
+</main>
+
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bulk Sales</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+
+<main class="page">
+    <a href="{{ url_for('view_sales') }}" class="back-link">← Back to Sales</a>
+    <h1 class="page-title">Bulk Sales</h1>
+
+    <div class="card">
+        <div class="info-banner">
+            Bulk sales are transactions that contain <strong>10 or more items</strong>.
+            These sales often indicate wholesale, promotional, or high-volume purchases.
+        </div>
+
+        {% if sales %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Sale ID</th>
+                    <th>Date</th>
+                    <th>Customer</th>
+                    <th>Employee</th>
+                    <th>Total Items</th>
+                    <th>Sale Total</th>
+                    <th>Payment Method</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in sales %}
+                <tr class="{% if s.total_items >= 5 %}heavy-bulk{% endif %}">
+                    <td>{{ s.Sale_ID }}</td>
+                    <td>{{ s.Sale_Date }}</td>
+                    <td>{{ s.Customer_Name }}</td>
+                    <td>{{ s.Employee_Name }}</td>
+                    <td class="items">{{ s.total_items }}</td>
+                    <td>₪{{ "%.2f"|format(s.Sale_Subtotal) }}</td>
+                    <td>{{ s.Sale_Payment_Method }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p class="empty">No bulk sales found.</p>
+        {% endif %}
+    </div>
+</main>
+
+</body>
+</html>

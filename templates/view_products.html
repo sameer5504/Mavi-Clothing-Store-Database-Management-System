@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Products</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+
+<main class="page">
+
+    <h1 class="page-title">Available Products</h1>
+
+    <div class="toolbar">
+        <div class="left">
+            <a href="{{ url_for('admin_dashboard') if session.role == 'admin' else url_for('user_dashboard') }}"
+               class="back-link">
+                ← Back to Dashboard
+            </a>
+
+            <input
+                class="search"
+                type="text"
+                id="categorySearch"
+                placeholder="Search by category..."
+                onkeyup="filterByCategory()">
+        </div>
+
+        <div class="right">
+            <a href="{{ url_for('unsold_products') }}" class="btn btn-outline">
+                Unsold Products
+            </a>
+
+            <a href="{{ url_for('top_products') }}" class="btn btn-outline">
+                Top 5 Products
+            </a>
+
+            {% if session.role == "admin" %}
+                <a href="{{ url_for('add_product') }}" class="btn btn-solid">
+                    + Add Product
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <table class="table" id="productsTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Size</th>
+                <th>Category</th>
+                <th>Unit Price</th>
+                <th>Store Qty</th>
+                <th>Warehouse Qty</th>
+                <th>Reorder Level</th>
+
+                {% if session.role == "admin" %}
+                    <th>Actions</th>
+                {% endif %}
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for p in products %}
+            <tr class="{% if p.Store_Quantity <= p.Reorder_Level %}low-stock{% endif %}">
+                <td>{{ p.Product_ID }}</td>
+                <td>{{ p.Product_Name }}</td>
+                <td>{{ p.Size }}</td>
+                <td class="category">{{ p.Category }}</td>
+                <td>{{ p.Default_Sale_Price }}</td>
+                <td>{{ p.Store_Quantity }}</td>
+                <td>{{ p.Warehouse_Quantity }}</td>
+                <td>{{ p.Reorder_Level }}</td>
+
+                {% if session.role == "admin" %}
+                <td>
+                    <a href="{{ url_for('edit_product', product_id=p.Product_ID) }}"
+                       class="btn btn-outline">
+                        Edit
+                    </a>
+
+                    <a href="{{ url_for('delete_product', product_id=p.Product_ID) }}"
+                       class="btn btn-delete"
+                       onclick="return confirm('Delete this product?');">
+                        Delete
+                    </a>
+                </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</main>
+
+<script>
+function filterByCategory() {
+    const input = document.getElementById("categorySearch").value.toLowerCase();
+    const rows = document.querySelectorAll("#productsTable tbody tr");
+
+    rows.forEach(row => {
+        const category = row.querySelector(".category").innerText.toLowerCase();
+        row.style.display = category.includes(input) ? "" : "none";
+    });
+}
+</script>
+
+</body>
+</html>

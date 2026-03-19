@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Employee</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+
+<main class="page">
+    <h1 class="page-title">Edit Employee</h1>
+
+    <form method="POST" class="form-page">
+
+        <div class="form-grid">
+            <div class="form-group">
+                <label>First Name</label>
+                <input type="text" name="first_name" value="Omar" required>
+            </div>
+
+            <div class="form-group">
+                <label>Last Name</label>
+                <input type="text" name="last_name" value="Khalil" required>
+            </div>
+
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" name="username" value="omar.khalil" required>
+            </div>
+
+            <div class="form-group">
+                <label>Role</label>
+                <select name="role" required>
+                    <option selected>Admin</option>
+                    <option>User</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a href="{{ url_for('manage_employees') }}" class="btn btn-outline">Cancel</a>
+            <button type="submit" class="btn btn-solid">Save Changes</button>
+        </div>
+
+    </form>
+</main>
+
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Inventory</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mavi_style.css') }}">
+</head>
+<body>
+
+<header class="top-nav">
+    <a href="{{ url_for('admin_dashboard') }}">⬅ Back to Dashboard</a>
+</header>
+
+<main class="page">
+
+<h2 class="page-title">Inventory</h2>
+
+
+<div class="card-box">
+<table class="table-simple">
+<thead>
+<tr>
+  <th>ID</th>
+  <th>Product</th>
+  <th>Quantity</th>
+  <th>Warehouse</th>
+  <th>Store</th>
+</tr>
+</thead>
+<tbody>
+
+{% if inventory %}
+  {% for row in inventory %}
+  <tr>
+    <td>{{ row.Inventory_ID }}</td>
+    <td>{{ row.Product_ID }}</td>
+    <td>{{ row.Quantity_Available }}</td>
+    <td>{{ row.Warehouse_ID if row.Warehouse_ID is not none else "-" }}</td>
+    <td>{{ row.Store_ID if row.Store_ID is not none else "-" }}</td>
+  </tr>
+  {% endfor %}
+{% else %}
+  <tr>
+    <td colspan="5" class="text-center">No inventory records found.</td>
+  </tr>
+{% endif %}
+
+</tbody>
+</table>
+</div>
+
+
+<div class="card-box">
+<table class="table-simple">
+<thead>
+<tr>
+  <th>Product ID</th>
+  <th>Name</th>
+  <th>Size</th>
+  <th>Color</th>
+  <th>Unit Price</th>
+  <th>Category</th>
+  <th>Unit Cost</th>
+</tr>
+</thead>
+<tbody>
+
+{% if products %}
+  {% for p in products %}
+  <tr>
+    <td>{{ p.Product_ID }}</td>
+    <td>{{ p.Product_Name }}</td>
+    <td>{{ p.Size }}</td>
+    <td>{{ p.Color }}</td>
+    <td>{{ p.Unit_Price }}</td>
+    <td>{{ p.Category }}</td>
+    <td>{{ p.Unit_Cost }}</td>
+  </tr>
+  {% endfor %}
+{% else %}
+  <tr>
+    <td colspan="7" class="text-center">No products found.</td>
+  </tr>
+{% endif %}
+
+</tbody>
+</table>
+</div>
+
+</main>
+
+</body>
+</html>

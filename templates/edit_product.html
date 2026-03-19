@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Product</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+
+<main class="page">
+    <h1 class="page-title">Edit Product</h1>
+
+    <form method="POST" class="form">
+
+        <div class="form-group">
+            <label>Product Name</label>
+            <input type="text" name="name" value="{{ product.Product_Name }}" required>
+        </div>
+
+        <div class="form-group">
+            <label>Category</label>
+            <input type="text" name="category" value="{{ product.Category }}" required>
+        </div>
+
+        <div class="form-group">
+            <label>Unit Price</label>
+            <input type="number" step="0.01" name="price" value="{{ product.Default_Sale_Price }}" required>
+        </div>
+
+        <div class="form-group">
+            <label>Reorder Level</label>
+            <input type="number" name="reorder_level" value="{{ product.Reorder_Level }}" required>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-solid">Update Product</button>
+            <a href="{{ url_for('view_products') }}" class="btn btn-outline">Cancel</a>
+        </div>
+
+    </form>
+</main>
+
+</body>
+</html>

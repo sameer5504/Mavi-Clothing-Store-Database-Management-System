@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Transfer Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mavi_style.css') }}">
+</head>
+<body>
+
+<header class="top-nav">
+    <a href="{{ url_for('view_transfers') }}">⬅ Back</a>
+</header>
+
+<main class="page">
+
+<h2 class="page-title">Transfer #{{ transfer.Transfer_ID }}</h2>
+
+<div class="card-box card-split">
+  <h4 class="m-0">Check Products Available Before You Transfer!</h4>
+  <a href="{{ url_for('view_inventory') }}" class="btn-outline">View Inventory</a>
+</div>
+
+<div class="card-box">
+<form method="post" action="{{ url_for('add_transfer_detail', transfer_id=transfer.Transfer_ID) }}">
+  <div class="form-grid-180">
+    <select name="Product_ID" class="input-sm" required>
+      <option value="" disabled selected>Select product</option>
+      {% for p in products %}
+        <option value="{{ p.Product_ID }}">
+          {{ p.Product_ID }} - {{ p.Product_Name }} {{ p.Size }}
+        </option>
+      {% endfor %}
+    </select>
+
+    <input type="number"
+           name="Quantity_Transferred"
+           class="input-sm"
+           placeholder="Quantity"
+           required>
+  </div>
+
+  <button class="btn-main mt-14">Add Product</button>
+</form>
+</div>
+
+<div class="card-box">
+<table class="table-simple">
+<thead>
+<tr>
+  <th>ID</th>
+  <th>Product</th>
+  <th>Quantity</th>
+  <th>Actions</th>
+</tr>
+</thead>
+<tbody>
+{% for d in details %}
+<tr>
+  <td>{{ d.TransferDetails_ID }}</td>
+  <td>{{ d.Product_ID }}</td>
+  <td>{{ d.Quantity_Transferred }}</td>
+  <td>
+    <a class="btn-danger"
+       href="{{ url_for('delete_transfer_detail',
+                        detail_id=d.TransferDetails_ID,
+                        transfer_id=transfer.Transfer_ID) }}">
+       Delete
+    </a>
+  </td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New Purchase Order</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mavi_style.css') }}">
+</head>
+<body>
+
+<header class="top-nav">
+    <a href="{{ url_for('view_purchases') }}">⬅ Back to Purchases</a>
+</header>
+
+<main class="page">
+<h2 class="page-title">Create Purchase Order</h2>
+
+<div class="card-box">
+<form method="post" action="{{ url_for('add_purchase') }}">
+  <div class="form-grid-220">
+
+    <div>
+      <label>Supplier</label>
+      <select name="Supplier_ID" class="input-sm" required>
+        <option value="" disabled selected>Select supplier</option>
+        {% for s in suppliers %}
+          <option value="{{ s.Supplier_ID }}">{{ s.Supplier_ID }} - {{ s.Supplier_Name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div>
+      <label>Employee</label>
+      <select name="Employee_ID" class="input-sm" required>
+        <option value="" disabled selected>Select employee</option>
+        {% for e in employees %}
+          <option value="{{ e.Employee_ID }}">{{ e.Employee_ID }} - {{ e.First_Name }} {{ e.Last_Name }} </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div>
+      <label>Purchase Date</label>
+      <input type="date" name="Purchase_Date" class="input-sm" required>
+    </div>
+
+    <div>
+      <label>Warehouse</label>
+      <select name="Warehouse_ID" class="input-sm" required>
+        <option value="" disabled selected>Select warehouse</option>
+        {% for w in warehouses %}
+          <option value="{{ w.Warehouse_ID }}">{{ w.Warehouse_ID }} - {{ w.Location }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="btn-main">Save Purchase</button>
+    <a href="{{ url_for('view_purchases') }}" class="btn-outline">Cancel</a>
+  </div>
+</form>
+</div>
+</main>
+</body>
+</html>

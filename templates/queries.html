@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reports & Queries</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mavi_style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<header class="top-nav">
+    <a href="{{ url_for('admin_dashboard') }}">⬅ Back to Dashboard</a>
+</header>
+
+<main class="page">
+
+<h2 class="page-title">Reports & Queries</h2>
+
+<div class="card-box">
+
+  <form method="POST" class="toolbar toolbar-wrap">
+
+    <select name="q" id="qSelect" class="input-sm" onchange="updateFields()">
+      <option value="1" {{ "selected" if q=="1" else "" }}>1 - Purchases in a year</option>
+      <option value="2" {{ "selected" if q=="2" else "" }}>2 - Quantity received in month</option>
+      <option value="3" {{ "selected" if q=="3" else "" }}>3 - Purchase cost per month (year)</option>
+      <option value="4" {{ "selected" if q=="4" else "" }}>4 - Quantity per product (year)</option>
+      <option value="5" {{ "selected" if q=="5" else "" }}>5 - Highest purchase cost (year)</option>
+      <option value="6" {{ "selected" if q=="6" else "" }}>6 - Below reorder level</option>
+      <option value="7" {{ "selected" if q=="7" else "" }}>7 - Purchases with no payments</option>
+      <option value="8" {{ "selected" if q=="8" else "" }}>8 - Never purchased products</option>
+      <option value="9" {{ "selected" if q=="9" else "" }}>9 - Stock transfers (date range)</option>
+      <option value="10" {{ "selected" if q=="10" else "" }}>10 - Inventory value per warehouse</option>
+    </select>
+
+    <div id="yearField">
+      <input type="number" name="year" placeholder="Year" value="{{ year }}" class="input-sm">
+    </div>
+
+    <div id="monthField">
+      <input type="number" name="month" placeholder="Month" min="1" max="12"
+             value="{{ month }}" class="input-sm">
+    </div>
+
+    <div id="rangeFields" class="range-fields">
+      <input type="date" name="date_from" value="{{ date_from }}" class="input-sm">
+      <input type="date" name="date_to" value="{{ date_to }}" class="input-sm">
+    </div>
+
+    <button type="submit" class="btn-main">Run Query</button>
+
+  </form>
+</div>
+
+{% if title %}
+<div class="card-box">
+  <h3>{{ title }}</h3>
+
+  {% if chart_json %}
+    <div class="chart-wrap">
+      <canvas id="myChart"></canvas>
+    </div>
+
+    <script>
+      const chartData = {{ chart_json | safe }};
+      const ctx = document.getElementById('myChart');
+
+      new Chart(ctx, {
+        type: chartData.type,
+        data: {
+          labels: chartData.labels,
+          datasets: [{
+            data: chartData.values
+          }]
+        }
+      });
+    </script>
+  {% endif %}
+
+  {% if results %}
+  <table class="table-simple">
+    <thead>
+      <tr>
+        {% for col in columns %}
+          <th>{{ col }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in results %}
+      <tr>
+        {% for col in columns %}
+          <td>{{ row[col] }}</td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p>No results found.</p>
+  {% endif %}
+</div>
+{% endif %}
+
+</main>
+
+<script>
+function updateFields() {
+  const q = document.getElementById("qSelect").value;
+
+  const yearField = document.getElementById("yearField");
+  const monthField = document.getElementById("monthField");
+  const rangeFields = document.getElementById("rangeFields");
+
+  yearField.style.display = "none";
+  monthField.style.display = "none";
+  rangeFields.style.display = "none";
+
+  if (["1", "3", "4", "5"].includes(q)) {
+    yearField.style.display = "block";
+  }
+
+  if (q === "2") {
+    yearField.style.display = "block";
+    monthField.style.display = "block";
+  }
+
+  if (q === "9") {
+    rangeFields.style.display = "flex";
+  }
+}
+
+document.addEventListener("DOMContentLoaded", updateFields);
+</script>
+
+</body>
+</html>

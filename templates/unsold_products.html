@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Unsold Products</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+
+<main class="page">
+    <a href="{{ url_for('view_products') }}" class="back-link">⬅ Back to Products</a>
+    <h1 class="page-title">Unsold Products</h1>
+
+    <div class="card">
+        <div class="info-banner">
+            The following products have not been sold yet and may require promotion,
+            price adjustment, or stock review.
+        </div>
+
+        {% if products %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Product</th>
+                    <th>Category</th>
+                    <th>Unit Price</th>
+                    <th>Store Quantity</th>
+                    <th>Reorder Level</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in products %}
+                <tr class="
+                    {% if p.Store_Quantity == 0 %}
+                        no-stock
+                    {% elif p.Store_Quantity > 0 %}
+                        dead-stock
+                    {% endif %}
+                ">
+                    <td>{{ p.Product_ID }}</td>
+                    <td>{{ p.Product_Name }} ({{ p.Size }})</td>
+                    <td>{{ p.Category }}</td>
+                    <td>₪{{ "%.2f"|format(p.Default_Sale_Price) }}</td>
+                    <td>{{ p.Store_Quantity }}</td>
+                    <td>{{ p.Reorder_Level }}</td>
+                    <td>
+                        {% if p.Store_Quantity == 0 %}
+                            <span class="status out">Out of Stock</span>
+                        {% else %}
+                            <span class="status warning">Dead Stock</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p class="empty">No Products to show.</p>
+        {% endif %}
+    </div>
+</main>
+
+</body>
+</html>

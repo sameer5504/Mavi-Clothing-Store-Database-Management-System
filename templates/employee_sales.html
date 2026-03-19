@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employee Sales</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+
+<main class="page">
+    <a href="{{ url_for('manage_employees') }}" class="back-link">⬅ Back to Employees</a>
+
+    <h1 class="page-title">Sales by {{ employee.First_Name }} {{ employee.Last_Name }}</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Sale ID</th>
+                <th>Date</th>
+                <th>Customer</th>
+                <th>Payment</th>
+                <th>Items</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for sale in sales %}
+            <tr class="sale-row" onclick="toggleDetails('{{ sale.Sale_ID }}')">
+                <td>{{ sale.Sale_ID }}</td>
+                <td>{{ sale.Sale_Date }}</td>
+                <td>{{ sale.Customer_Name }}</td>
+                <td>{{ sale.Sale_Payment_Method }}</td>
+                <td>{{ sale.Total_Items }}</td>
+                <td class="total">{{ sale.Sale_Subtotal }}</td>
+            </tr>
+
+            <tr id="details-{{ sale.Sale_ID }}" class="sale-details" style="display:none;">
+                <td colspan="6">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Qty</th>
+                                <th>Unit Price</th>
+                                <th>Line Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in sale_details[sale.Sale_ID] %}
+                            <tr>
+                                <td>{{ item.Product_Name }} ({{ item.Size }})</td>
+                                <td>{{ item.Quantity }}</td>
+                                <td>{{ item.Unit_Price }}</td>
+                                <td>{{ item.Line_Total }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</main>
+
+<script>
+function toggleDetails(id) {
+    const row = document.getElementById("details-" + id);
+    row.style.display = row.style.display === "table-row" ? "none" : "table-row";
+}
+</script>
+
+</body>
+</html>

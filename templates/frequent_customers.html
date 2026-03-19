@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Frequent Customers</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+
+<main class="page">
+    <a href="{{ url_for('view_sales') }}" class="back-link">← Back to Sales</a>
+
+    <h1 class="page-title">Frequent Customers</h1>
+
+    <div class="card">
+        <div class="info-banner">
+            Frequent customers are customers who have made
+            <strong>3 or more purchases</strong>.
+            These customers are ideal for loyalty programs, discounts, and targeted promotions.
+        </div>
+
+        {% if customers %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Customer</th>
+                    <th>Phone</th>
+                    <th>Total Purchases</th>
+                    <th>Total Spent</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in customers %}
+                <tr class="{% if c.total_purchases >= 5 %}heavy-bulk{% endif %}">
+                    <td>{{ c.First_Name }} {{ c.Last_Name }}</td>
+                    <td>{{ c.Phone }}</td>
+                    <td class="items">{{ c.total_purchases }}</td>
+                    <td>₪{{ "%.2f"|format(c.total_spent) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p class="empty">No frequent customers found.</p>
+        {% endif %}
+    </div>
+</main>
+
+</body>
+</html>

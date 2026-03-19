@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+
+<header class="top-nav">
+    <div class="nav-left">
+        <img src="{{ url_for('static', filename='images/mavi-seeklogo.png') }}" class="nav-logo">
+        <span class="system-name">Mavi Palestine – Admin System</span>
+    </div>
+
+    <div class="nav-right">
+        <span class="user-role">Administrator</span>
+        <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+    </div>
+</header>
+
+<main class="page">
+    <h1 class="page-title">Admin Dashboard</h1>
+    <p class="page-subtitle">Manage system data and operational modules</p>
+
+    <div class="dash-grid">
+        <a href="/create_sale" class="card-link">
+            <h3>Cash System</h3>
+            <p>Create and process customer sales</p>
+        </a>
+
+        <a href="/view_sales" class="card-link">
+            <h3>Sales History</h3>
+            <p>View, audit, and analyze sales records</p>
+        </a>
+
+        <a href="/products" class="card-link">
+            <h3>Products</h3>
+            <p>Manage product catalog and pricing</p>
+        </a>
+
+
+        <a href="/employees" class="card-link">
+            <h3>Employees</h3>
+            <p>Add, edit, and manage employee accounts</p>
+        </a>
+
+        <a href="/monthly_sales" class="card-link">
+            <h3>Monthly Sales Summary</h3>
+            <p>View your sales distribution by month</p>
+        </a>
+
+    <a href="{{ url_for('view_purchases') }}" class="card-link">
+        <h3>Purchases</h3>
+        <p>Open and review purchase records</p>
+    </a>
+
+    <a href="{{ url_for('view_inventory') }}" class="card-link">
+        <h3>Inventory</h3>
+        <p>View current stock and item details</p>
+    </a>
+
+    <a href="{{ url_for('view_transfers') }}" class="card-link">
+        <h3>Transfers</h3>
+        <p>View inventory transfer history</p>
+    </a>
+
+    <a href="{{ url_for('queries_page') }}" class="card-link">
+    <h3>Reports & Queries</h3>
+    <p>Access reports, analytics, and custom queries</p>
+    </a>
+
+
+
+    </div>
+</main>
+
+</body>
